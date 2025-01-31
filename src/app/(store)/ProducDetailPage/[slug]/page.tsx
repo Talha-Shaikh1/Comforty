@@ -23,7 +23,7 @@ export default async function page({
     inventory,
     description,
   }`;
-  const product: Product | null = await client.fetch(query, { slug });
+  const product: Product = await client.fetch(query, { slug });
   const featureProduct = await fetchFeatureProducts();
 
   if (!product) {
