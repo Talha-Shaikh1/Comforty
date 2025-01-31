@@ -1,12 +1,12 @@
 
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { fetchAllProducts } from '@/sanity/lib/product/getAllProducts';
-import ProductGrid from '@/components/ProductGrid';
+import ProductGrid from '@/app/components/ProductGrid';
 import { Product } from '@/types/interfaces';
 
 export default async function AllProducts() {
-  const products = await fetchAllProducts();
+  const products: Product[] = await fetchAllProducts();
 
   return (
     <div className="container mx-auto px-4 py-8">

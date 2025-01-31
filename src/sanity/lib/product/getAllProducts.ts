@@ -2,7 +2,7 @@ import { client } from '../client';
 import groq from 'groq';
 import { Product } from '@/types/interfaces';
 
-export async function fetchAllProducts(): Promise<Product[]> {
+export async function fetchAllProducts() {
   const query = groq`*[_type == "products"]{
     _id,
     title,
@@ -30,3 +30,4 @@ export async function fetchAllProducts(): Promise<Product[]> {
     throw new Error('An unknown error occurred while fetching products.');
   }
 }
+

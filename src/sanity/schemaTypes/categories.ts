@@ -29,7 +29,7 @@ export const categorySchema = defineType({
         },
         {
             title: 'Number of Products',
-            name: 'products',
+            name: 'productsCount',
             type: 'number',
         }
     ],

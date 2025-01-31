@@ -1,6 +1,6 @@
 import { client } from "../client";
 import groq from "groq";
-import { Category, Product } from "@/types/interfaces";
+import { Category } from "@/types/interfaces";
 
 export async function fetchTopCategories(): Promise<Category[]> {
   const query = groq`*[_type == "categories"]{
@@ -8,7 +8,7 @@ export async function fetchTopCategories(): Promise<Category[]> {
     _id,
     "imageUrl": image.asset->url,
     "productCount": count(*[_type == "products" && references(^._id)]),
-    slug
+    "slug": slug.current
   }`;
 
   try {
