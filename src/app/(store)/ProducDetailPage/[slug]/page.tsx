@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { TrolleyIcon } from "@sanity/icons";
 import { fetchFeatureProducts } from "@/sanity/lib/product/getFeatureProducts";
+import Head from "next/head";
 
 
 export default async function page({
@@ -32,6 +33,13 @@ export default async function page({
 
   return (
     <div>
+    <Head>
+        <title>{product.title} - Buy Now | Comforty</title>
+        <meta name="description" content={`Buy ${product.title} at Comforty. ${product.description}`} />
+        <meta property="og:title" content={`${product.title} - Comforty`} />
+        <meta property="og:description" content={product.description} />
+        <meta property="og:image" content={product.imageUrl} />
+      </Head>
       <div className=" px-4 py-8 ">
         <div className="flex gap-8 flex-col md:flex-row items-center justify-center">
           <div className=" h-full md:h-96">
