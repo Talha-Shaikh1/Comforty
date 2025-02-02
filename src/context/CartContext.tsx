@@ -10,6 +10,8 @@ import React, {
 } from "react";
 
 export interface CartItemType {
+  imageUrl: string;
+  length: number;
   image: string;
   title: string;
   price: number;

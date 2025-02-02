@@ -1,5 +1,6 @@
 import ProductGrid from "@/app/components/ProductGrid";
-import { getAllProductsByCategory } from "@/sanity/lib/product/getProductsByCategory";
+import { getProductsByCategory } from "@/sanity/lib/product/getProductsByCategory";
+import { Product } from "@/types/interfaces";
 import React from "react";
 
 export default async function CategoryPage({
@@ -8,7 +9,7 @@ export default async function CategoryPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const products = await getAllProductsByCategory(slug);
+  const products:Product[] = await getProductsByCategory(slug);
 
   return (
     <div>

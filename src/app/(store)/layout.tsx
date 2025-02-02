@@ -6,6 +6,7 @@ import Footer from "@/app/components/Footer";
 import { ClerkProvider } from "@clerk/nextjs";
 import WishlistProvider from "@/context/WishListContext";
 import {CartProvider} from "@/context/CartContext";
+import { ToastContainer } from "react-toastify";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +37,10 @@ export default function RootLayout({
          <CartProvider>
             <WishlistProvider>
             <Navbar />
-            <main className="max-w-6xl mx-auto">{children}</main>
+            <main className="max-w-6xl mx-auto">{children}
+              <ToastContainer />
+            </main>
+
             </WishlistProvider>
           </CartProvider>
 

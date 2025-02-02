@@ -1,49 +1,18 @@
 'use client'
 import React, { useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter} from 'next/navigation';
 import { FaCheckCircle } from 'react-icons/fa';
-import { v4 as uuidv4 } from "uuid";
-import { client } from '@/sanity/lib/client';
-import { LineItem, Order} from '@/types/interfaces';
+import { useCart } from '@/context/CartContext';
 
 
 export default function SuccessPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const sessionId = searchParams.get('session_id');
-
+  const { clearCart } = useCart();
   useEffect(() => {
-    const createOrder = async () => {
-      if (sessionId) {
-        const session = await fetch(`/api/stripe/session?session_id=${sessionId}`).then(res => res.json());
+    
+    clearCart()
+  },[clearCart]);
 
-        const order: Order = {
-          _type: "order",
-          orderNumber: session.metadata.orderNumber,
-          customerName: session.metadata.customerName,
-          customerEmail: session.metadata.customerEmail,
-          clerkUserId: session.metadata.clerkUserId,
-          address: session.metadata.address,
-          phone: session.metadata.phone,
-          products: session.line_items.data.map((item: LineItem) => ({
-            _key: uuidv4(),
-            product: {
-              _type: "reference",
-              _ref: item.price.product,
-            },
-            quantity: item.quantity,
-          })),
-          totalPrice: session.amount_total / 100,
-          status: "paid",
-          orderDate: new Date().toISOString(),
-        };
-
-        await client.create(order);
-      }
-    };
-
-    createOrder();
-  }, [sessionId]);
 
   const handleHomeClick = () => {
     router.push('/');
@@ -52,6 +21,7 @@ export default function SuccessPage() {
   const handleViewOrdersClick = () => {
     router.push(`/orders`);
   };
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-green-400 to-blue-500 text-white">

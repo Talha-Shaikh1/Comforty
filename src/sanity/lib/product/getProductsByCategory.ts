@@ -1,24 +1,27 @@
-import { client } from "../client"
+import { client } from "../client";
 
-
-export const getAllProductsByCategory = async(categorySlug: string) => {
-  const query = `*[_type == 'products' && categories->slug.current == $categorySlug]{
+export const getProductsByCategory = async (slug: string) => {
+  const query = `*[_type == "product" && category.slug.current == $slug] {
     _id,
     title,
     "imageUrl": image.asset->url,
     price,
     badge,
-    description,
-    inventory,
     priceWithoutDiscount,
-  }`
+    inventory,
+    description,
+    slug {
+      current 
+}
+      
+    }`;
 
   try {
-    const products = await client.fetch(query, { categorySlug })
-    return products
+    const products = await client.fetch(query, { slug });
+    return products;
   } catch (error) {
-    console.error("error in fetching products by category", error)
+    console.error("error in fetching products by category", error);
 
-    return []
+    return [];
   }
-}
+};

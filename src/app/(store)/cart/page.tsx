@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useCart } from "@/context/CartContext";
+import { CartItemType, useCart } from "@/context/CartContext";
 import Image from "next/image";
 import { FaRegHeart } from "react-icons/fa";
-import CheckoutPage from "../checkout/page";
+
 import { SignInButton, useAuth, useUser } from "@clerk/nextjs";
 import CustomerInfoForm from "@/app/components/CustomerInfoForm";
 import { loadStripe } from "@stripe/stripe-js";
@@ -27,9 +27,7 @@ export default function CartPage() {
     phone: string;
     address: string;
   } | null>(null);
-  const [showCheckout] = useState(false);
   const { cart, updateQuantity, removeFromCart } = useCart();
-  const { clearCart } = useCart();
   const totalPrice = cart.reduce(
     (total, item) => total + item.price * item.quantity,
     0
@@ -39,9 +37,6 @@ export default function CartPage() {
     setIsClient(true);
   }, []);
 
-  if (showCheckout) {
-    return <CheckoutPage />;
-  }
 
   if (!isClient) {
     return <div>Loading...</div>;
@@ -66,16 +61,20 @@ export default function CartPage() {
         phone: info.phone,
       };
 
-      const cartItems = cart.map((item) => ({
+      const items = cart.map((item) => ({
         ...item,
         image: item.imageUrl,
-      }));
-      const response = await createCheckoutSession(cartItems, metadata);
+      })) as unknown as CartItemType[];
+
+      if(items.length === 0) {
+        alert("Your cart is empty.");
+      }
+
+      const response = await createCheckoutSession(items, metadata);
 
       if (response.success) {
         const stripe = await stripePromise;
         await stripe?.redirectToCheckout({ sessionId: response.sessionId });
-        clearCart();
       }
     } catch (error) {
       console.error("Error creating checkout session", error);
@@ -177,7 +176,7 @@ export default function CartPage() {
               <CustomerInfoForm onSubmit={setCustomerInfo} />
               <button
                 onClick={() => handleCheckOut(customerInfo!)}
-                disabled={isLoading || !customerInfo}
+                disabled={isLoading || !customerInfo || cart.length === 0}
                 className="mt-4 w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
               >
                 {isLoading ? "Processing..." : "Checkout"}

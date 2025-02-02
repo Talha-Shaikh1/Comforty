@@ -1,8 +1,9 @@
-import { client } from '@/sanity/lib/client';
+
 import { auth } from '@clerk/nextjs/server';
 import Image from 'next/image';
-import { urlFor } from '@/sanity/lib/image'; // Sanity Image Helper
+import { urlFor } from '@/sanity/lib/image'; 
 import { Order, OrderItem } from '@/types/interfaces';
+import { getAllOrders } from '@/sanity/lib/order/getAllOrders';
 
 export default async function OrdersPage() {
   const { userId } = await auth();
@@ -11,32 +12,13 @@ export default async function OrdersPage() {
     return <p className="text-center text-red-500">You must be logged in to view orders.</p>;
   }
 
-  const query = `*[_type == "order" && clerkUserId == "${userId}"]{
-    _id,
-    orderNumber,
-    customerName,
-    customerEmail,
-    address,
-    phone,
-    products[] {
-      _key,
-      quantity,
-      product->{
-        _id,
-        title,
-        price,
-        image
-      }
-    },
-    totalPrice,
-    status,
-    orderDate
-  }`;
+  
 
-  const orders = await client.fetch(query);
+  const orders = await getAllOrders();
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <p className='text-red-500 text-lg text-center'>If you can&apos;t see your order refresh the Page</p>
       <h1 className="text-3xl font-bold mb-6 text-center">Your Orders</h1>
 
       {orders.length === 0 ? (
@@ -71,6 +53,7 @@ export default async function OrdersPage() {
                   {order.status}
                 </span>
               </p>
+
 
               {/* Products List - Mobile Row & Desktop Grid */}
               <h3 className="text-lg font-semibold mt-4">Products:</h3>

@@ -1,6 +1,8 @@
 import stripe from "@/lib/stripe";
-
+import { v4 as uuidv4 } from "uuid";
 import { CartItemType } from "@/context/CartContext";
+import { client } from "@/sanity/lib/client";
+
 
 export type Metadata = {
   orderNumber: string;
@@ -15,6 +17,7 @@ export async function createCheckoutSession(
   items: CartItemType[],
   metadata: Metadata
 ) {
+  
   try {
     console.log("Items received for checkout:", items);
 
@@ -32,7 +35,7 @@ export async function createCheckoutSession(
 
     const successUrl = `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}&orderNumber=${metadata.orderNumber}`;
 
-    const cancelUrl = `${baseUrl}/basket`;
+    const cancelUrl = `${baseUrl}/cancel`;
 
     const session = await stripe.checkout.sessions.create({
       line_items: items.map((item) => ({
@@ -40,6 +43,15 @@ export async function createCheckoutSession(
           currency: "usd",
           product_data: {
             name: item.title,
+            description: `Product ID : ${item._id}`,
+            metadata: {
+              productId: item._id,
+              quantity: item.quantity,
+              price: item.price,
+              title: item.title,
+            },
+            images: [item.imageUrl],
+            
           },
           unit_amount: item.price * 100,
         },
@@ -57,6 +69,36 @@ export async function createCheckoutSession(
         phone: metadata.phone,
       },
     });
+
+
+
+    const order = {
+      _type: "order",
+      orderNumber: metadata.orderNumber,
+      customerName: metadata.customerName,
+      customerEmail: metadata.customerEmail,
+      clerkUserId: metadata.clerkUserId,
+      address: metadata.address,
+      phone: metadata.phone,
+      products: items.map(item => ({
+        _key: uuidv4(),
+        product: {
+          _type: "reference",
+          _ref: item._id,
+        },
+        quantity: item.quantity,
+      })),
+      totalPrice: items.reduce((total, item) => total + item.price * item.quantity, 0),
+      status: "pending",
+      orderDate: new Date().toISOString(),
+      stripeSessionId: session.id,
+
+    };
+
+    console.log("ORder Created in SAnity ", order);
+
+    await client.create(order);
+   
 
     return { success: true, sessionId: session.id };
   } catch (error) {

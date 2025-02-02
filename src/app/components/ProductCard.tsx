@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/types/interfaces";
 import {useCart} from "@/context/CartContext";
+import { toast } from "react-toastify";
 
 
 interface Props {
@@ -22,9 +23,16 @@ const ProductCard: React.FC<Props> = ({ product }) => {
 
   useEffect(() => {
     if (showPopup) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
+      toast.success("Added to cart", {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        onClose: () => setShowPopup(false),
+      });
     }
   }, [showPopup]);
 
@@ -81,31 +89,6 @@ const ProductCard: React.FC<Props> = ({ product }) => {
         </div>
       </div>
 
-      {/* Popup */}
-      {showPopup && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-          style={{ pointerEvents: "auto" }}
-        >
-          <div className="bg-white p-6 rounded shadow-md text-center z-60">
-            <p className="mb-4">Product added to cart successfully!</p>
-            <div className="flex gap-4 justify-center">
-              <button
-                onClick={() => setShowPopup(false)}
-                className="bg-gray-500 text-white px-4 py-2 rounded"
-              >
-                Continue Shopping
-              </button>
-              <button
-                onClick={() => (window.location.href = "/cart")}
-                className="bg-green-500 text-white px-4 py-2 rounded"
-              >
-                View Cart
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
