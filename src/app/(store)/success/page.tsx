@@ -1,18 +1,12 @@
 'use client'
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useRouter} from 'next/navigation';
 import { FaCheckCircle } from 'react-icons/fa';
-import { useCart } from '@/context/CartContext';
+
 
 
 export default function SuccessPage() {
   const router = useRouter();
-  const { clearCart } = useCart();
-  useEffect(() => {
-    
-    clearCart()
-  },[clearCart]);
-
 
   const handleHomeClick = () => {
     router.push('/');

@@ -17,6 +17,8 @@ const stripePromise = loadStripe(
 );
 
 export default function CartPage() {
+  const [message, setMessage] = useState(false)
+  const {clearCart} = useCart()
   const { isSignedIn } = useAuth();
   const { user } = useUser();
   const [isClient, setIsClient] = useState(false);
@@ -48,9 +50,13 @@ export default function CartPage() {
     phone: string;
     address: string;
   }) => {
+
+    
+
     if (!isSignedIn) return;
     setIsLoading(true);
-
+    clearCart()
+    setMessage(true)
     try {
       const metadata: Metadata = {
         orderNumber: crypto.randomUUID(),
@@ -87,16 +93,29 @@ export default function CartPage() {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6 text-start">Bag</h1>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
         {/* Left Side: Cart Items */}
         <div className="lg:col-span-2 space-y-6">
           {cart.length === 0 ? (
-            <p className="text-center">Your cart is empty.</p>
+            <div>
+              <p className="text-center">Your cart is empty.</p>
+              {
+              message && (
+                <div className={`visible`}>
+                  <p className="text-2xl text-center mt-16 text-blue-500">Product going for check out</p>
+                </div>
+              )
+            }
+            </div>
+            
+            
           ) : (
             cart.map((item) => (
               <div
                 key={item._id}
                 className="flex flex-col md:flex-row items-center border-b pb-4"
               >
+                
                 {/* Image */}
                 <div className="w-40 h-40">
                   <Image
