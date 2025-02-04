@@ -5,7 +5,7 @@ import Link from "next/link";
 import { MdOutlineDone } from "react-icons/md";
 import { CiCircleAlert } from "react-icons/ci";
 import { IoIosArrowDown } from "react-icons/io";
-import { TrolleyIcon } from "@sanity/icons";
+import { CloseIcon, MenuIcon, TrolleyIcon } from "@sanity/icons";
 import Form from "next/form"
 import { SignInButton, useAuth, UserButton, useUser } from "@clerk/nextjs";
 import { MdOutlineFollowTheSigns } from "react-icons/md";
@@ -182,12 +182,11 @@ const Navbar: React.FC = () => {
           className="md:hidden flex items-center justify-center"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
-          <Image
-            src={isMobileMenuOpen ? "/cross-image.png" : "/menu-image.png"}
-            alt="menu"
-            width={24}
-            height={24}
-          />
+          {isMobileMenuOpen ? (
+            <CloseIcon className="w-6 h-6" />
+          ) : (
+            <MenuIcon />
+          )}
         </button>
 
         <div className="flex items-center">
