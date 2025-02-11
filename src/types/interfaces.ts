@@ -88,6 +88,7 @@ export interface OrderItem {
 }
 
 export interface Order {
+  userId: string,
   _id?: string;
   _type: string;
   orderNumber: string;

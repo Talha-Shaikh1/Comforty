@@ -1,31 +1,22 @@
-import { client } from "@/sanity/lib/client";
+
 import { Product } from "@/types/interfaces";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { TrolleyIcon } from "@sanity/icons";
 import { fetchFeatureProducts } from "@/sanity/lib/product/getFeatureProducts";
 import Head from "next/head";
-
+import getProductBySlug from "@/sanity/lib/product/getProductBySlug";
+import AddToCartButton from "@/app/components/AddToCartButton";
 
 export default async function page({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params;
-  const query = `*[_type == "products" && slug.current == $slug][0]{
-  _id,
-    title,
-    "imageUrl": image.asset->url,
-    price,
-    badge,
-    priceWithoutDiscount,
-    inventory,
-    description,
-  }`;
-  const product: Product = await client.fetch(query, { slug });
-  const featureProduct = await fetchFeatureProducts();
+  const { slug } = await params
+  const product: Product = await getProductBySlug(slug)
+  const featureProduct = await fetchFeatureProducts()
+
 
   if (!product) {
     return <div>Product not found</div>;
@@ -33,9 +24,12 @@ export default async function page({
 
   return (
     <div>
-    <Head>
+      <Head>
         <title>{product.title} - Buy Now | Comforty</title>
-        <meta name="description" content={`Buy ${product.title} at Comforty. ${product.description}`} />
+        <meta
+          name="description"
+          content={`Buy ${product.title} at Comforty. ${product.description}`}
+        />
         <meta property="og:title" content={`${product.title} - Comforty`} />
         <meta property="og:description" content={product.description} />
         <meta property="og:image" content={product.imageUrl} />
@@ -72,10 +66,7 @@ export default async function page({
               <p className="text-gray-400 md:text-start text-center">
                 {product.description}
               </p>
-              <div className="mt-6 w-48 py-3 bg-[#029FAE] text-white text-lg font-medium rounded-md hover:bg-teal-600 transition duration-300 flex text-center justify-center items-center">
-                <TrolleyIcon className="w-8 h-8" />
-                <button>Add to Cart</button>
-              </div>
+              <AddToCartButton product={product}/>
             </div>
           </div>
         </div>
@@ -105,7 +96,7 @@ export default async function page({
                     alt={item.title}
                     layout="fill"
                     objectFit="cover"
-                    className="rounded transition-transform duration-300 hover:scale-110" 
+                    className="rounded transition-transform duration-300 hover:scale-110"
                   />
                 </div>
               </Link>
@@ -120,7 +111,5 @@ export default async function page({
         </div>
       </div>
     </div>
-
-    
   );
 }

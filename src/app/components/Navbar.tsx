@@ -5,19 +5,15 @@ import Link from "next/link";
 import { MdOutlineDone } from "react-icons/md";
 import { CiCircleAlert } from "react-icons/ci";
 import { IoIosArrowDown } from "react-icons/io";
-import { CloseIcon, MenuIcon, TrolleyIcon } from "@sanity/icons";
-import Form from "next/form"
-import { SignInButton, useAuth, UserButton, useUser } from "@clerk/nextjs";
+import { CloseIcon, CubeIcon, MenuIcon, TrolleyIcon } from "@sanity/icons";
+import Form from "next/form";
+import { ClerkLoaded, SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import { MdOutlineFollowTheSigns } from "react-icons/md";
 import { useCart } from "@/context/CartContext";
 
-
-
 const Navbar: React.FC = () => {
-
-  const { isSignedIn } = useAuth();
+  const {cartCount} = useCart()
   const { user } = useUser();
- const {cartCount} = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isPagesDropdownOpen, setIsPagesDropdownOpen] = useState(false);
 
@@ -80,36 +76,47 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* Cart */}
-         <div className="flex items-center gap-4">
-         <Link href={"/cart"}>
-            <div className="py-3 px-5 border border-gray-300 bg-white flex justify-center items-center">
-              <TrolleyIcon className="w-8 h-8" />
-              <h3 className="px-2 hidden md:flex">Cart</h3>
-              <div className="h-5 w-5 rounded-full flex items-center justify-center bg-[#007580] text-white text-sm">
-                {cartCount}
+          <div className="flex items-center gap-4">
+            <Link href={"/cart"}>
+              <div className="py-2 px-5 border border-gray-300 bg-white flex justify-center items-center">
+                <TrolleyIcon className="w-8 h-8" />
+                <h3 className="px-2 hidden md:flex">Cart</h3>
+                <div className="h-5 w-5 rounded-full flex items-center justify-center bg-[#007580] text-white text-sm">
+                  {cartCount}
+                </div>
               </div>
-            </div>
-          </Link>
-          {/* Auth Buttons */}
-          {isSignedIn ? (
-            <div className="flex items-center gap-2">
-              <UserButton  />
+            </Link>
 
-              <h3 className="text-sm font-semibold">Hello, {user?.firstName}</h3>
-              
-            </div>
-              
-            ) : (
-              <SignInButton>
-                <button className="py-2 px-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center gap-2">
-                <span><MdOutlineFollowTheSigns  className="text-2xl"/></span>
+            {/* Auth Buttons */}
+            <ClerkLoaded>
+              {user && <Link href={"/orders"}>
+              <div className="py-2 px-5 border border-gray-300 bg-white flex justify-center items-center">
+                <CubeIcon className="w-8 h-8" />
+                <h3 className="px-2 hidden md:flex">All Orders</h3>
+                
+              </div>
+            </Link>}
 
-                   Sign In
-                </button>
-              </SignInButton>
-            )}
-           
-         </div>
+              {user ? (
+                <div className="flex items-center gap-2">
+                  <UserButton/>
+
+                  <h3 className="text-sm font-semibold">
+                    Hello, {user?.firstName}
+                  </h3>
+                </div>
+              ) : (
+                <SignInButton>
+                  <button className="py-2 px-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center gap-2">
+                    <span>
+                      <MdOutlineFollowTheSigns className="text-2xl" />
+                    </span>
+                    Sign In
+                  </button>
+                </SignInButton>
+              )}
+            </ClerkLoaded>
+          </div>
         </div>
       </div>
 
@@ -160,20 +167,18 @@ const Navbar: React.FC = () => {
         </ul>
 
         <div className="flex items-center">
-        <Form
-          action="/search"
-          className="w-20 sm:w-auto sm:flex-1 sm:mx-4 mt-2 sm:mt-0"
-        >
-          <input
-            type="text"
-            name="query"
-            placeholder="Search for products"
-            className="bg-gray-100 text-gray-800 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 border w-full max-w-xl"
-          />
-        </Form>
+          <Form
+            action="/search"
+            className="w-20 sm:w-auto sm:flex-1 sm:mx-4 mt-2 sm:mt-0"
+          >
+            <input
+              type="text"
+              name="query"
+              placeholder="Search for products"
+              className="bg-gray-100 text-gray-800 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 border w-full max-w-xl"
+            />
+          </Form>
         </div>
-
-       
       </div>
 
       {/* Mobile menu */}
@@ -182,25 +187,21 @@ const Navbar: React.FC = () => {
           className="md:hidden flex items-center justify-center"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
-          {isMobileMenuOpen ? (
-            <CloseIcon className="w-6 h-6" />
-          ) : (
-            <MenuIcon />
-          )}
+          {isMobileMenuOpen ? <CloseIcon className="w-6 h-6" /> : <MenuIcon />}
         </button>
 
         <div className="flex items-center">
-        <Form
-          action="/search"
-          className="w-20 sm:w-auto sm:flex-1 sm:mx-4 mt-2 sm:mt-0"
-        >
-          <input
-            type="text"
-            name="query"
-            placeholder="Search for products"
-            className="bg-gray-100 text-gray-800 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 border w-full max-w-xl"
-          />
-        </Form>
+          <Form
+            action="/search"
+            className="w-20 sm:w-auto sm:flex-1 sm:mx-4 mt-2 sm:mt-0"
+          >
+            <input
+              type="text"
+              name="query"
+              placeholder="Search for products"
+              className="bg-gray-100 text-gray-800 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 border w-full max-w-xl"
+            />
+          </Form>
         </div>
       </div>
 
