@@ -127,7 +127,7 @@ const Navbar: React.FC = () => {
             <Link href="/">Home</Link>
           </li>
           <li className="hover:text-[#007580]">
-            <Link href="./cart/">Shop</Link>
+            <Link href="/cart/">Shop</Link>
           </li>
           <li className="hover:text-[#007580]">
             <Link href="/products/">Product</Link>
@@ -153,7 +153,7 @@ const Navbar: React.FC = () => {
                     </Link>
                   </li>
                   <li className="px-4 py-2 hover:bg-gray-100 hover:text-[#007580]">
-                    <Link href="./about-us/" onClick={handleLinkClick}>
+                    <Link href="/about-us/" onClick={handleLinkClick}>
                       About Us
                     </Link>
                   </li>
@@ -162,7 +162,7 @@ const Navbar: React.FC = () => {
             </div>
           </li>
           <li className="relative hover:text-[#007580] cursor-pointer">
-            <Link href="./contact-us/">Contact</Link>
+            <Link href="/contact-us/">Contact</Link>
           </li>
         </ul>
 
@@ -217,27 +217,27 @@ const Navbar: React.FC = () => {
             </Link>
           </li>
           <li className="hover:text-[#007580]">
-            <Link href="./cart/" onClick={handleLinkClick}>
+            <Link href="/cart/" onClick={handleLinkClick}>
               Shop
             </Link>
           </li>
           <li className="hover:text-[#007580]">
-            <Link href="./AllProducts/" onClick={handleLinkClick}>
+            <Link href="/products/" onClick={handleLinkClick}>
               Product
             </Link>
           </li>
           <li className="hover:text-[#007580]">
-            <Link href="./faqs/" onClick={handleLinkClick}>
+            <Link href="/faqs/" onClick={handleLinkClick}>
               FAQs
             </Link>
           </li>
           <li className="hover:text-[#007580]">
-            <Link href="./contact-us" onClick={handleLinkClick}>
+            <Link href="/contact-us" onClick={handleLinkClick}>
               Contact
             </Link>
           </li>
           <li className="hover:text-[#007580]">
-            <Link href="./about-us/" onClick={handleLinkClick}>
+            <Link href="/about-us/" onClick={handleLinkClick}>
               About
             </Link>
           </li>
